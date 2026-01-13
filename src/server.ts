@@ -39,22 +39,3 @@ const startServer = async () => {
   });
 };
 startServer();
-
-// here this api is creating for superadmin now i cannot uncommented
-
-// app.post("/api/seed-admin", async (req, res) => {
-//   const exists = await User.findOne({ role: "superadmin" });
-//   if (exists) {
-//     return res.status(400).json({ message: "Super Admin already exists" });
-//   }
-
-//   const superAdmin = await User.create({
-//     fullname: "shahzad iqbal",
-//     email: "choudhuryshahzad5068@gmail.com",
-//     password: await bcrypt.hash("shahzad5068@", 10),
-//     role: "superadmin",
-//     permissions: Object.values(Permission),
-//   });
-
-//   res.json({ message: "Super Admin created", superAdmin });
-// });
