@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { login, logout } from "../controllers/authController";
-
+import authController from "../controllers/authController";
 const router = Router();
 
 // Define your auth routes here if needed
-router.post("/login", login);
-router.post("/logout", logout);
-
+router.post("/login", authController.login);
+router.post("/logout", authController.logout);
+router.post("/register", authController.RegisterUser);
+router.post("/verify-otp", authController.verifyOtp);
 export default router;

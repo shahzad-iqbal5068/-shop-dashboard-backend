@@ -30,7 +30,10 @@ const userSchema = new mongoose.Schema(
       type: [String],
       required: true,
     },
-
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -38,7 +41,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("User", userSchema);

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export const verifyToken = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) => {
   const token = req.cookies.access_token;
   if (!token) {
@@ -13,7 +13,7 @@ export const verifyToken = (
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET_KEY as string
+      process.env.JWT_SECRET_KEY as string,
     ) as jwt.JwtPayload;
     req.user = decoded;
     next();
