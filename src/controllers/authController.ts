@@ -2,11 +2,10 @@ import { RegisterUser } from "./../types/user";
 import express from "express";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
-import { comparePassword } from "../utils/bcryptHelper";
 import Otp from "../models/otp";
 import bcrypt from "bcrypt";
 import { sendOtpEmail } from "../utils/sendOtp";
-
+import { hashValue, compareHashValue } from "../utils/bcryptHelper";
 // Login Controller
 const login = async (req: express.Request, res: express.Response) => {
   try {
@@ -29,7 +28,7 @@ const login = async (req: express.Request, res: express.Response) => {
       });
     }
 
-    const match = await comparePassword(password, user.password);
+    const match = await compareHashValue(password, user.password);
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -99,7 +98,7 @@ const RegisterUser = async (req: express.Request, res: express.Response) => {
     await Otp.deleteMany({ userId: newUser._id });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const hashedOtp = await bcrypt.hash(otp, 10);
+    const hashedOtp = await hashValue(otp);
     // Save OTP to DB
     await Otp.create({
       userId: newUser._id,
@@ -149,7 +148,8 @@ export const verifyOtp = async (
     }
 
     // 4. Compare OTP
-    const isOtpValid = await bcrypt.compare(otp, otpRecord.otp);
+    const isOtpValid = await compareHashValue(otp, otpRecord.otp);
+
     if (!isOtpValid) {
       return res.status(400).json({ message: "Invalid OTP" });
     }
