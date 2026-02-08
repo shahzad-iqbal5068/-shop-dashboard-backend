@@ -56,7 +56,7 @@ const login = async (req: express.Request, res: express.Response) => {
       message: "Login successful",
       user: {
         id: user._id,
-        fullname: user.fullname,
+        fullname: user.username,
         role: user.role,
       },
     });
@@ -78,7 +78,7 @@ const logout = (req: express.Request, res: express.Response) => {
 //Register Controller
 const RegisterUser = async (req: express.Request, res: express.Response) => {
   try {
-    const { fullname, email, password } = req.body;
+    const { username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -88,7 +88,7 @@ const RegisterUser = async (req: express.Request, res: express.Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     //create user with default role and empty permissions
     const newUser = await User.create({
-      fullname,
+      username,
       email,
       password: hashedPassword,
       role: "salesperson", // DEFAULT ROLE

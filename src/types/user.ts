@@ -1,7 +1,7 @@
 import { Role } from "./role";
 import { Permission } from "./permisisons";
 export interface RegisterUser {
-  fullname: string;
+  username: string;
   email: string;
   password: string;
 
