@@ -7,4 +7,5 @@ router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 router.post("/register", authController.RegisterUser);
 router.post("/verify-otp", authController.verifyOtp);
+router.get("/me", authController.me);
 export default router;

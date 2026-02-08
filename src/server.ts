@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { verifyToken } from "./middlewares/authMiddlware";
 import authRoutes from "./routes/authRoutes";
+import cors from "cors";
 
 // load then env variables
 dotenv.config();
@@ -12,8 +13,16 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", authRoutes);
 app.get("/", (req: express.Request, res: express.Response) => {

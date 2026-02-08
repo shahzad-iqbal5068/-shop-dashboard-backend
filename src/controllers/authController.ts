@@ -9,9 +9,9 @@ import { hashValue, compareHashValue } from "../utils/bcryptHelper";
 // Login Controller
 const login = async (req: express.Request, res: express.Response) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -45,8 +45,10 @@ const login = async (req: express.Request, res: express.Response) => {
 
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      secure: false, // HTTP localhost
+      // sameSite: "strict",
+      sameSite: "lax", // ⭐ IMPORTANT
       maxAge: 15 * 60 * 1000,
     });
 
@@ -168,4 +170,23 @@ export const verifyOtp = async (
   }
 };
 
-export default { login, logout, RegisterUser, verifyOtp };
+export const me = async (req: express.Request, res: express.Response) => {
+  try {
+    const token = req.cookies.access_token;
+    console.log("Token from cookie:", token);
+    if (!token) return res.status(401).json({ message: "Not authenticated" });
+
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET_KEY!);
+    console.log("Decoded token:", decoded);
+
+    const user = await User.findById(decoded.id).select("-password");
+    console.log("User from DB:", user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ user });
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+export default { login, logout, RegisterUser, verifyOtp, me };
